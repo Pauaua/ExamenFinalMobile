@@ -1,0 +1,79 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Configuración</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Accesibilidad</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>Modo alto contraste</ion-label>
+      <ion-toggle [(ngModel)]="configuracion.accesibilidad.altoContraste" name="altoContraste"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Tamaño de fuente grande</ion-label>
+      <ion-toggle [(ngModel)]="configuracion.accesibilidad.fuenteGrande" name="fuenteGrande"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Lector de pantalla</ion-label>
+      <ion-toggle [(ngModel)]="configuracion.accesibilidad.lectorPantalla" name="lectorPantalla"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Descripciones de imagen</ion-label>
+      <ion-toggle [(ngModel)]="configuracion.accesibilidad.descripcionImagenes" name="descripcionImagenes"></ion-toggle>
+    </ion-item>
+
+    <ion-list-header>
+      <ion-label>Notificaciones</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>Notificaciones push</ion-label>
+      <ion-toggle [(ngModel)]="configuracion.notificaciones.pushHabilitadas" name="pushHabilitadas"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Recordatorios por defecto</ion-label>
+      <ion-select [(ngModel)]="configuracion.notificaciones.recordatorioDefault" name="recordatorioDefault" interface="popover">
+        <ion-select-option value="5">5 minutos</ion-select-option>
+        <ion-select-option value="15">15 minutos</ion-select-option>
+        <ion-select-option value="30">30 minutos</ion-select-option>
+        <ion-select-option value="60">1 hora</ion-select-option>
+        <ion-select-option value="120">2 horas</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-list-header>
+      <ion-label>Integración con Calendario</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>Sincronización automática</ion-label>
+      <ion-toggle [(ngModel)]="configuracion.calendario.sincronizacionAutomatica" name="sincronizacionAutomatica"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Aplicación de calendario predeterminada</ion-label>
+      <ion-select [(ngModel)]="configuracion.calendario.aplicacionDefault" name="aplicacionDefault" interface="popover">
+        <ion-select-option value="google">Google Calendar</ion-select-option>
+        <ion-select-option value="apple">Apple Calendar</ion-select-option>
+        <ion-select-option value="outlook">Outlook</ion-select-option>
+        <ion-select-option value="local">Calendario Local</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-button
+    expand="block"
+    (click)="guardarConfiguracion()"
+    style="margin: 16px;">
+    Guardar Configuración
+  </ion-button>
+</ion-content>

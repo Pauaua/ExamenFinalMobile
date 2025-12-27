@@ -1,0 +1,44 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Eve
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Eve</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="container">
+    <div class="welcome-section">
+      <h1>Bienvenido a la App Eve</h1>
+      <p>Tu aplicación para gestionar eventos y actividades</p>
+    </div>
+
+    <ion-button
+      expand="block"
+      routerLink="/eventos"
+      fill="solid"
+      style="margin: 16px;">
+      Eventos
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      routerLink="/actividades"
+      fill="outline"
+      style="margin: 16px;">
+      Actividades
+    </ion-button>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>&copy; 2025 Eve App - Todos los derechos reservados</ion-title>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,72 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/eventos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Crear Evento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form (ngSubmit)="crearEvento()">
+    <ion-item>
+      <ion-label position="stacked">Título</ion-label>
+      <ion-input [(ngModel)]="nuevoEvento.titulo" name="titulo" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Descripción</ion-label>
+      <ion-textarea [(ngModel)]="nuevoEvento.descripcion" name="descripcion"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Fecha</ion-label>
+      <ion-datetime
+        display-format="DD/MM/YYYY"
+        [(ngModel)]="nuevoEvento.fecha"
+        name="fecha"
+        required>
+      </ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Hora</ion-label>
+      <ion-datetime
+        display-format="HH:mm"
+        pickerFormat="HH:mm"
+        [(ngModel)]="nuevoEvento.hora"
+        name="hora"
+        display-timezone="utc">
+      </ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Ubicación</ion-label>
+      <ion-input [(ngModel)]="nuevoEvento.ubicacion" name="ubicacion"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Habilitar notificación</ion-label>
+      <ion-toggle [(ngModel)]="nuevoEvento.notificacionHabilitada" name="notificacionHabilitada"></ion-toggle>
+    </ion-item>
+
+    <ion-item *ngIf="nuevoEvento.notificacionHabilitada">
+      <ion-label position="stacked">Recordatorio (minutos antes)</ion-label>
+      <ion-select [(ngModel)]="nuevoEvento.recordatorioMinutos" name="recordatorioMinutos" interface="popover">
+        <ion-select-option value="5">5 minutos</ion-select-option>
+        <ion-select-option value="15">15 minutos</ion-select-option>
+        <ion-select-option value="30">30 minutos</ion-select-option>
+        <ion-select-option value="60">1 hora</ion-select-option>
+        <ion-select-option value="120">2 horas</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button
+      expand="block"
+      type="submit"
+      [disabled]="!nuevoEvento.titulo || !nuevoEvento.fecha"
+      style="margin: 16px;">
+      Crear Evento
+    </ion-button>
+  </form>
+</ion-content>
