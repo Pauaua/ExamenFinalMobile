@@ -1,11 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/eventos"></ion-back-button>
+      <ion-back-button defaultHref="/actividades"></ion-back-button>
     </ion-buttons>
-    <ion-title>Detalle del Evento</ion-title>
+    <ion-title>Detalle de la Actividad</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="editarEvento()">
+      <ion-button (click)="editarActivity()">
         <ion-icon name="create"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,16 +13,16 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div *ngIf="evento" class="evento-detalle">
-    <h1>{{ evento.titulo }}</h1>
-    <p class="descripcion">{{ evento.descripcion }}</p>
+  <div *ngIf="activity" class="activity-detalle">
+    <h1>{{ activity.titulo }}</h1>
+    <p class="descripcion">{{ activity.descripcion }}</p>
 
     <ion-list>
       <ion-item>
         <ion-icon name="calendar" slot="start"></ion-icon>
         <ion-label>
           <h3>Fecha</h3>
-          <p>{{ evento.fecha | date:'fullDate' }}</p>
+          <p>{{ activity.fecha | date:'fullDate' }}</p>
         </ion-label>
       </ion-item>
 
@@ -30,7 +30,7 @@
         <ion-icon name="time" slot="start"></ion-icon>
         <ion-label>
           <h3>Hora</h3>
-          <p>{{ evento.hora }}</p>
+          <p>{{ activity.hora }}</p>
         </ion-label>
       </ion-item>
 
@@ -38,23 +38,31 @@
         <ion-icon name="location" slot="start"></ion-icon>
         <ion-label>
           <h3>Ubicación</h3>
-          <p>{{ evento.ubicacion }}</p>
+          <p>{{ activity.ubicacion }}</p>
         </ion-label>
       </ion-item>
 
       <ion-item>
-        <ion-icon name="notifications" slot="start"></ion-icon>
+        <ion-icon name="pricetag" slot="start"></ion-icon>
         <ion-label>
-          <h3>Notificación</h3>
-          <p>{{ evento.notificacionHabilitada ? 'Habilitada' : 'Deshabilitada' }}</p>
+          <h3>Tipo</h3>
+          <p>{{ activity.tipo }}</p>
         </ion-label>
       </ion-item>
 
-      <ion-item *ngIf="evento.notificacionHabilitada">
-        <ion-icon name="alarm" slot="start"></ion-icon>
+      <ion-item>
+        <ion-icon name="flag" slot="start"></ion-icon>
         <ion-label>
-          <h3>Recordatorio</h3>
-          <p>{{ evento.recordatorioMinutos }} minutos antes</p>
+          <h3>Prioridad</h3>
+          <p>{{ activity.prioridad }}</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+        <ion-label>
+          <h3>Completada</h3>
+          <p>{{ activity.completada ? 'Sí' : 'No' }}</p>
         </ion-label>
       </ion-item>
     </ion-list>
@@ -65,15 +73,15 @@
         Sincronizar con Calendario
       </ion-button>
 
-      <ion-button expand="block" (click)="eliminarEvento()" fill="clear" color="danger">
+      <ion-button expand="block" (click)="eliminarActivity()" fill="clear" color="danger">
         <ion-icon name="trash" slot="start"></ion-icon>
-        Eliminar Evento
+        Eliminar Actividad
       </ion-button>
     </div>
   </div>
 
-  <div *ngIf="!evento" class="no-encontrado">
-    <p>Evento no encontrado</p>
-    <ion-button routerLink="/eventos">Volver a eventos</ion-button>
+  <div *ngIf="!activity" class="no-encontrado">
+    <p>Actividad no encontrada</p>
+    <ion-button routerLink="/actividades">Volver a actividades</ion-button>
   </div>
 </ion-content>

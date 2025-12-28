@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,19 +22,40 @@ export class EventCreatePage implements OnInit {
     notificacionHabilitada: true,
     recordatorioMinutos: 15
   };
+  esEdicion = false;
+  eventoId: string | null = null;
 
   constructor(
     private eventosService: EventosService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.eventoId = id;
+        this.esEdicion = true;
+        const evento = this.eventosService.getEventoById(id);
+        if (evento) {
+          this.nuevoEvento = { ...evento };
+        }
+      }
+    });
   }
 
-  crearEvento() {
+  guardarEvento() {
     if (this.nuevoEvento.titulo && this.nuevoEvento.fecha) {
-      this.eventosService.crearEvento(this.nuevoEvento as Omit<Evento, 'id'>);
-      this.router.navigate(['/eventos']);
+      if (this.esEdicion && this.eventoId) {
+        // Actualizar evento existente
+        this.eventosService.actualizarEvento(this.eventoId, this.nuevoEvento as Partial<Evento>);
+        this.router.navigate(['/eventos']);
+      } else {
+        // Crear nuevo evento
+        this.eventosService.crearEvento(this.nuevoEvento as Omit<Evento, 'id' | 'userId'>);
+        this.router.navigate(['/eventos']);
+      }
     }
   }
 }

@@ -1,0 +1,97 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Perfil de Usuario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="profile-container">
+    <div class="profile-header">
+      <h1>Configuración de Perfil</h1>
+      <p>Administra tu información y preferencias</p>
+    </div>
+
+    <div class="user-info" *ngIf="currentUser">
+      <ion-item>
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="currentUser.nombre"
+          placeholder="Tu nombre">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Apellido</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="currentUser.apellido"
+          placeholder="Tu apellido">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input
+          type="email"
+          [(ngModel)]="currentUser.email"
+          placeholder="tu@email.com"
+          readonly>
+        </ion-input>
+      </ion-item>
+    </div>
+
+    <div class="preferences-section">
+      <h2>Preferencias de Notificación</h2>
+
+      <ion-item>
+        <ion-label>Notificaciones Push</ion-label>
+        <ion-toggle
+          [(ngModel)]="preferences.pushHabilitadas"
+          name="pushHabilitadas">
+        </ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Notificaciones por Email</ion-label>
+        <ion-toggle
+          [(ngModel)]="preferences.notificacionEmail"
+          name="notificacionEmail">
+        </ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Recordatorio (minutos antes)</ion-label>
+        <ion-select
+          [(ngModel)]="preferences.recordatorioMinutos"
+          interface="popover">
+          <ion-select-option value="5">5 minutos</ion-select-option>
+          <ion-select-option value="15">15 minutos</ion-select-option>
+          <ion-select-option value="30">30 minutos</ion-select-option>
+          <ion-select-option value="60">1 hora</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <ion-button
+      expand="block"
+      (click)="guardarCambios()"
+      [disabled]="isSaving"
+      style="margin: 20px 16px;">
+      <ion-spinner *ngIf="isSaving" name="crescent" style="margin-right: 10px;"></ion-spinner>
+      {{ isSaving ? 'Guardando...' : 'Guardar Cambios' }}
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      fill="clear"
+      color="danger"
+      (click)="cerrarSesion()"
+      style="margin: 0 16px;">
+      Cerrar Sesión
+    </ion-button>
+  </div>
+</ion-content>

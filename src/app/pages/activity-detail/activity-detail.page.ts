@@ -3,23 +3,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, IonicModule, ActionSheetController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { EventosService, Evento } from 'src/app/services/eventos';
+import { RouterLink } from '@angular/router';
+import { ActivitiesService, Activity } from 'src/app/services/activities.service';
 import { CalendarIntegrationService } from 'src/app/services/calendar-integration.service';
 
 @Component({
-  selector: 'app-event-detail',
-  templateUrl: './event-detail.page.html',
-  styleUrls: ['./event-detail.page.scss'],
+  selector: 'app-activity-detail',
+  templateUrl: './activity-detail.page.html',
+  styleUrls: ['./activity-detail.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, DatePipe]
+  imports: [IonicModule, CommonModule, DatePipe, RouterLink]
 })
-export class EventDetailPage implements OnInit {
-  evento: Evento | null = null;
+export class ActivityDetailPage implements OnInit {
+  activity: Activity | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private eventosService: EventosService,
+    private activitiesService: ActivitiesService,
     private alertController: AlertController,
     private actionSheetController: ActionSheetController,
     private calendarIntegrationService: CalendarIntegrationService
@@ -28,21 +29,21 @@ export class EventDetailPage implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.evento = this.eventosService.getEventoById(id) || null;
+      this.activity = this.activitiesService.getActivityById(id) || null;
     }
   }
 
-  editarEvento() {
-    if (this.evento) {
-      this.router.navigate([`/event-create/${this.evento.id}`]);
+  editarActivity() {
+    if (this.activity) {
+      this.router.navigate([`/activity-create/${this.activity.id}`]);
     }
   }
 
-  async eliminarEvento() {
-    if (this.evento) {
+  async eliminarActivity() {
+    if (this.activity) {
       const alert = await this.alertController.create({
         header: 'Confirmar eliminación',
-        message: `¿Estás seguro de que deseas eliminar el evento "${this.evento.titulo}"?`,
+        message: `¿Estás seguro de que deseas eliminar la actividad "${this.activity.titulo}"?`,
         buttons: [
           {
             text: 'Cancelar',
@@ -51,8 +52,8 @@ export class EventDetailPage implements OnInit {
           {
             text: 'Eliminar',
             handler: () => {
-              this.eventosService.eliminarEvento(this.evento!.id);
-              this.router.navigate(['/eventos']);
+              this.activitiesService.eliminarActivity(this.activity!.id);
+              this.router.navigate(['/actividades']);
             }
           }
         ]
@@ -63,7 +64,7 @@ export class EventDetailPage implements OnInit {
   }
 
   async mostrarOpcionesCalendario() {
-    if (!this.evento) return;
+    if (!this.activity) return;
 
     const actionSheet = await this.actionSheetController.create({
       header: 'Sincronizar con Calendario',
@@ -101,7 +102,7 @@ export class EventDetailPage implements OnInit {
   }
 
   async sincronizarConCalendario(calendarType: 'google' | 'outlook' | 'apple') {
-    if (!this.evento) return;
+    if (!this.activity) return;
 
     const alert = await this.alertController.create({
       header: 'Sincronizando...',
@@ -111,34 +112,24 @@ export class EventDetailPage implements OnInit {
     await alert.present();
 
     // Sincronizar con el calendario seleccionado
-    const success = await this.calendarIntegrationService.syncEventToCalendar(this.evento, calendarType);
+    const success = await this.calendarIntegrationService.syncActivityToCalendar(this.activity, calendarType);
 
     alert.dismiss();
 
     if (success) {
       const successAlert = await this.alertController.create({
         header: 'Sincronización completada',
-        message: `El evento ha sido sincronizado con ${calendarType} Calendar.`,
+        message: `La actividad ha sido sincronizada con ${calendarType} Calendar.`,
         buttons: ['OK']
       });
       await successAlert.present();
     } else {
       const errorAlert = await this.alertController.create({
         header: 'Error de sincronización',
-        message: `No se pudo sincronizar el evento con ${calendarType} Calendar.`,
+        message: `No se pudo sincronizar la actividad con ${calendarType} Calendar.`,
         buttons: ['OK']
       });
       await errorAlert.present();
     }
-  }
-
-  async presentSincronizacionAlert() {
-    const alert = await this.alertController.create({
-      header: 'Sincronización completada',
-      message: 'El evento ha sido sincronizado con tu calendario externo.',
-      buttons: ['OK']
-    });
-
-    await alert.present();
   }
 }

@@ -1,0 +1,60 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Iniciar Sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="login-container">
+    <div class="login-header">
+      <h1>Bienvenido de nuevo</h1>
+      <p>Inicia sesión en tu cuenta</p>
+    </div>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input
+          type="email"
+          name="email"
+          [(ngModel)]="credentials.email"
+          required
+          placeholder="tu@email.com">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input
+          type="password"
+          name="password"
+          [(ngModel)]="credentials.password"
+          required
+          placeholder="••••••••">
+        </ion-input>
+      </ion-item>
+
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="!loginForm.form.valid || isLoggingIn"
+        style="margin-top: 20px;">
+        <ion-spinner *ngIf="isLoggingIn" name="crescent" style="margin-right: 10px;"></ion-spinner>
+        {{ isLoggingIn ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+      </ion-button>
+    </form>
+
+    <div class="login-footer">
+      <p>¿No tienes una cuenta?
+        <a (click)="goToRegister()" style="color: #3880ff; text-decoration: none; cursor: pointer;">Regístrate aquí</a>
+      </p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      <ion-text color="danger">{{ errorMessage }}</ion-text>
+    </div>
+  </div>
+</ion-content>

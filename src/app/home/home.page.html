@@ -3,10 +3,15 @@
     <ion-title>
       Eve
     </ion-title>
+    <ion-buttons slot="end" *ngIf="isAuthenticated()">
+      <ion-button routerLink="/profile" [attr.aria-label]="'Ir al perfil'">
+        <ion-icon name="person" [attr.aria-label]="'Icono de perfil'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" role="main">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Eve</ion-title>
@@ -15,30 +20,66 @@
 
   <div class="container">
     <div class="welcome-section">
-      <h1>Bienvenido a la App Eve</h1>
-      <p>Tu aplicación para gestionar eventos y actividades</p>
+      <h1 tabindex="0" aria-label="Bienvenido a la App Eve">Bienvenido a la App Eve</h1>
+      <p tabindex="0">Tu aplicación para gestionar eventos y actividades</p>
     </div>
 
-    <ion-button
-      expand="block"
-      routerLink="/eventos"
-      fill="solid"
-      style="margin: 16px;">
-      Eventos
-    </ion-button>
+    <div *ngIf="!isAuthenticated(); else authenticatedContent" role="region" aria-label="Opciones de inicio de sesión">
+      <ion-button
+        expand="block"
+        routerLink="/login"
+        fill="solid"
+        style="margin: 16px;"
+        [attr.aria-label]="'Iniciar sesión en la aplicación'">
+        Acceder a mi cuenta
+      </ion-button>
 
-    <ion-button
-      expand="block"
-      routerLink="/actividades"
-      fill="outline"
-      style="margin: 16px;">
-      Actividades
-    </ion-button>
+      <ion-button
+        expand="block"
+        routerLink="/register"
+        fill="outline"
+        style="margin: 16px;"
+        [attr.aria-label]="'Registrarse en la aplicación'">
+        Registrarse
+      </ion-button>
+    </div>
+
+    <ng-template #authenticatedContent>
+      <div class="user-content" role="region" aria-label="Contenido para usuarios autenticados">
+        <p style="text-align: center; margin-bottom: 20px;" tabindex="0">¡Hola, {{ getCurrentUser()?.nombre }}!</p>
+        <ion-button
+          expand="block"
+          routerLink="/eventos"
+          fill="solid"
+          style="margin: 8px;"
+          [attr.aria-label]="'Ir a la sección de eventos'">
+          Mis Eventos
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          routerLink="/actividades"
+          fill="outline"
+          style="margin: 8px;"
+          [attr.aria-label]="'Ir a la sección de actividades'">
+          Mis Actividades
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          routerLink="/profile"
+          fill="clear"
+          style="margin: 8px;"
+          [attr.aria-label]="'Ir a la sección de perfil'">
+          Mi Perfil
+        </ion-button>
+      </div>
+    </ng-template>
   </div>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
-    <ion-title>&copy; 2025 Eve App - Todos los derechos reservados</ion-title>
+    <ion-title>&copy; 2025 Eve App - Ningún derecho reservado</ion-title>
   </ion-toolbar>
 </ion-footer>

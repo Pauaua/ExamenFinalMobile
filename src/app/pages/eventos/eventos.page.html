@@ -4,21 +4,21 @@
       Eventos
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="crearEvento()">
-        <ion-icon name="add"></ion-icon>
+      <ion-button (click)="crearEvento()" [attr.aria-label]="'Crear nuevo evento'">
+        <ion-icon name="add" [attr.aria-label]="'Icono de agregar'"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" role="main">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="arrow-down" refreshingSpinner="circles">
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-list>
-    <ion-item *ngFor="let evento of eventos" [routerLink]="['/event-detail', evento.id]" detail="true">
+  <ion-list role="list" [attr.aria-label]="'Lista de eventos'">
+    <ion-item *ngFor="let evento of eventos" [routerLink]="['/event-detail', evento.id]" detail="true" [attr.aria-label]="'Evento: ' + evento.titulo">
       <ion-label>
         <h2>{{ evento.titulo }}</h2>
         <p>{{ evento.fecha | date:'short' }} - {{ evento.hora }}</p>
@@ -29,13 +29,14 @@
         name="notifications"
         color="primary"
         slot="end"
-        style="margin-left: 10px;">
+        style="margin-left: 10px;"
+        [attr.aria-label]="'Notificación habilitada'">
       </ion-icon>
     </ion-item>
   </ion-list>
 
-  <div *ngIf="eventos.length === 0" class="empty-state">
+  <div *ngIf="eventos.length === 0" class="empty-state" role="region" [attr.aria-label]="'No hay eventos programados'">
     <p>No hay eventos programados</p>
-    <ion-button (click)="crearEvento()" fill="clear">Crear primer evento</ion-button>
+    <ion-button (click)="crearEvento()" fill="clear" [attr.aria-label]="'Crear primer evento'">Crear primer evento</ion-button>
   </div>
 </ion-content>

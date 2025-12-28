@@ -1,0 +1,42 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Actividades
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="crearActivity()" [attr.aria-label]="'Crear nueva actividad'">
+        <ion-icon name="add" [attr.aria-label]="'Icono de agregar'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" role="main">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-down" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list role="list" [attr.aria-label]="'Lista de actividades'">
+    <ion-item *ngFor="let activity of activities" [routerLink]="['/activity-detail', activity.id]" detail="true" [attr.aria-label]="'Actividad: ' + activity.titulo">
+      <ion-label>
+        <h2>{{ activity.titulo }}</h2>
+        <p>{{ activity.fecha | date:'short' }} - {{ activity.hora }}</p>
+        <p>{{ activity.ubicacion }}</p>
+      </ion-label>
+      <ion-icon
+        *ngIf="activity.completada"
+        name="checkmark-circle"
+        color="success"
+        slot="end"
+        style="margin-left: 10px;"
+        [attr.aria-label]="'Actividad completada'">
+      </ion-icon>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="activities.length === 0" class="empty-state" role="region" [attr.aria-label]="'No hay actividades programadas'">
+    <p>No hay actividades programadas</p>
+    <ion-button (click)="crearActivity()" fill="clear" [attr.aria-label]="'Crear primera actividad'">Crear primera actividad</ion-button>
+  </div>
+</ion-content>

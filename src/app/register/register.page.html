@@ -1,0 +1,94 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Registrarse</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="register-container">
+    <div class="register-header">
+      <h1>Crear Cuenta</h1>
+      <p>Regístrate para comenzar a usar Eve</p>
+    </div>
+
+    <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+      <ion-item>
+        <ion-label position="stacked">Nombre</ion-label>
+        <ion-input
+          type="text"
+          name="nombre"
+          [(ngModel)]="registerData.nombre"
+          required
+          placeholder="Tu nombre">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Apellido</ion-label>
+        <ion-input
+          type="text"
+          name="apellido"
+          [(ngModel)]="registerData.apellido"
+          required
+          placeholder="Tu apellido">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input
+          type="email"
+          name="email"
+          [(ngModel)]="registerData.email"
+          required
+          placeholder="tu@email.com">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input
+          type="password"
+          name="password"
+          [(ngModel)]="registerData.password"
+          required
+          minlength="6"
+          placeholder="••••••••">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Confirmar Contraseña</ion-label>
+        <ion-input
+          type="password"
+          name="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          required
+          placeholder="••••••••">
+        </ion-input>
+      </ion-item>
+
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="!registerForm.form.valid || isRegistering || registerData.password !== confirmPassword"
+        style="margin-top: 20px;">
+        <ion-spinner *ngIf="isRegistering" name="crescent" style="margin-right: 10px;"></ion-spinner>
+        {{ isRegistering ? 'Registrando...' : 'Registrarse' }}
+      </ion-button>
+    </form>
+
+    <div class="register-footer">
+      <p>¿Ya tienes una cuenta?
+        <a (click)="goToLogin()" style="color: #3880ff; text-decoration: none; cursor: pointer;">Inicia sesión aquí</a>
+      </p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      <ion-text color="danger">{{ errorMessage }}</ion-text>
+    </div>
+  </div>
+</ion-content>

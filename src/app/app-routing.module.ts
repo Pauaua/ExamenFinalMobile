@@ -27,6 +27,30 @@ const routes: Routes = [
     path: 'settings',
     loadChildren: () => import('./pages/settings/settings.module').then( m => m.SettingsPageModule)
   },
+  {
+    path: 'actividades',
+    loadChildren: () => import('./pages/actividades/actividades.module').then( m => m.ActividadesPageModule)
+  },
+  {
+    path: 'activity-create',
+    loadChildren: () => import('./pages/activity-create/activity-create.module').then( m => m.ActivityCreatePageModule)
+  },
+  {
+    path: 'activity-detail',
+    loadChildren: () => import('./pages/activity-detail/activity-detail.module').then( m => m.ActivityDetailPageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+  },
 ];
 
 @NgModule({

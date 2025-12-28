@@ -1,16 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { EventCreatePage } from './event-create.page';
+import { ActivityDetailPage } from './activity-detail.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: EventCreatePage
-  },
-  {
-    path: ':id',
-    component: EventCreatePage
+    component: ActivityDetailPage
   }
 ];
 
@@ -18,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class EventCreatePageRoutingModule {}
+export class ActivityDetailPageRoutingModule {}

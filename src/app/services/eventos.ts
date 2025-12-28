@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
+import { SyncService } from './sync.service';
+import { NotificationService } from './notification.service';
+import { AuthService } from './auth.service';
 
 export interface Evento {
   id: string;
+  userId: string; // ID del usuario al que pertenece el evento
   titulo: string;
   descripcion: string;
   fecha: Date;
@@ -18,34 +22,107 @@ export class EventosService {
   private eventos: Evento[] = [];
   private idCounter = 1;
 
-  constructor() { }
-
-  // Obtener todos los eventos
-  getEventos(): Evento[] {
-    return this.eventos;
+  constructor(
+    private syncService: SyncService,
+    private notificationService: NotificationService,
+    private authService: AuthService
+  ) {
+    // Cargar eventos locales al iniciar
+    this.eventos = this.syncService.getLocalEvents();
+    if (this.eventos.length > 0) {
+      // Actualizar el contador de ID basado en los eventos existentes
+      const maxId = Math.max(...this.eventos.map(e => parseInt(e.id)), 0);
+      this.idCounter = maxId + 1;
+    }
   }
 
-  // Obtener un evento por ID
+  // Obtener todos los eventos del usuario actual
+  getEventos(): Evento[] {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      return [];
+    }
+    return this.eventos.filter(evento => evento.userId === currentUser.id);
+  }
+
+  // Obtener un evento por ID (solo si pertenece al usuario actual)
   getEventoById(id: string): Evento | undefined {
-    return this.eventos.find(evento => evento.id === id);
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      return undefined;
+    }
+    return this.eventos.find(evento =>
+      evento.id === id && evento.userId === currentUser.id
+    );
   }
 
   // Crear un nuevo evento
-  crearEvento(evento: Omit<Evento, 'id'>): Evento {
+  crearEvento(evento: Omit<Evento, 'id' | 'userId'>): Evento {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      throw new Error('No hay usuario autenticado');
+    }
+
     const nuevoEvento: Evento = {
       ...evento,
-      id: this.idCounter.toString()
+      id: this.idCounter.toString(),
+      userId: currentUser.id
     };
     this.eventos.push(nuevoEvento);
     this.idCounter++;
+
+    // Añadir a la cola de sincronización
+    this.syncService.addToSyncQueue({
+      id: nuevoEvento.id,
+      type: 'evento',
+      operation: 'create',
+      data: nuevoEvento
+    });
+
+    // Programar notificación si está habilitada
+    if (nuevoEvento.notificacionHabilitada) {
+      this.notificationService.scheduleEventNotification(nuevoEvento, nuevoEvento.recordatorioMinutos);
+    }
+
     return nuevoEvento;
   }
 
   // Actualizar un evento existente
   actualizarEvento(id: string, eventoActualizado: Partial<Evento>): boolean {
-    const index = this.eventos.findIndex(evento => evento.id === id);
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      return false;
+    }
+
+    const index = this.eventos.findIndex(evento =>
+      evento.id === id && evento.userId === currentUser.id
+    );
     if (index !== -1) {
+      const eventoAnterior = { ...this.eventos[index] };
       this.eventos[index] = { ...this.eventos[index], ...eventoActualizado };
+
+      // Añadir a la cola de sincronización
+      this.syncService.addToSyncQueue({
+        id: id,
+        type: 'evento',
+        operation: 'update',
+        data: this.eventos[index]
+      });
+
+      // Actualizar notificación si es necesario
+      const eventoActual = this.eventos[index];
+      if (eventoActual.notificacionHabilitada) {
+        // Cancelar notificación anterior si las fechas o recordatorios cambiaron
+        if (eventoAnterior.fecha !== eventoActual.fecha ||
+            eventoAnterior.recordatorioMinutos !== eventoActual.recordatorioMinutos) {
+          this.notificationService.cancelNotification(parseInt(id));
+          this.notificationService.scheduleEventNotification(eventoActual, eventoActual.recordatorioMinutos);
+        }
+      } else {
+        // Si se deshabilitó la notificación, cancelarla
+        this.notificationService.cancelNotification(parseInt(id));
+      }
+
       return true;
     }
     return false;
@@ -53,12 +130,48 @@ export class EventosService {
 
   // Eliminar un evento
   eliminarEvento(id: string): boolean {
-    const index = this.eventos.findIndex(evento => evento.id === id);
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      return false;
+    }
+
+    const index = this.eventos.findIndex(evento =>
+      evento.id === id && evento.userId === currentUser.id
+    );
     if (index !== -1) {
+      const eventoEliminado = this.eventos[index];
       this.eventos.splice(index, 1);
+
+      // Añadir a la cola de sincronización
+      this.syncService.addToSyncQueue({
+        id: id,
+        type: 'evento',
+        operation: 'delete',
+        data: eventoEliminado
+      });
+
+      // Cancelar notificación asociada
+      this.notificationService.cancelNotification(parseInt(id));
+
       return true;
     }
     return false;
+  }
+
+  // Sincronizar eventos con el servidor
+  async sincronizarEventos(): Promise<Evento[]> {
+    const eventosActualizados = await this.syncService.syncEventsWithServer(this.eventos);
+    this.eventos = eventosActualizados;
+    return this.eventos;
+  }
+
+  // Programar notificaciones para todos los eventos
+  async programarNotificaciones(): Promise<void> {
+    for (const evento of this.eventos) {
+      if (evento.notificacionHabilitada) {
+        await this.notificationService.scheduleEventNotification(evento, evento.recordatorioMinutos);
+      }
+    }
   }
 
   // Simular la sincronización con calendario externo

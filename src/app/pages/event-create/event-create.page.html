@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form (ngSubmit)="crearEvento()">
+  <form (ngSubmit)="guardarEvento()">
     <ion-item>
       <ion-label position="stacked">Título</ion-label>
       <ion-input [(ngModel)]="nuevoEvento.titulo" name="titulo" required></ion-input>
